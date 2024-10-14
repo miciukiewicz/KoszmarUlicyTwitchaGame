@@ -44,4 +44,6 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	class UStaticMeshComponent* DoorMesh;
+
+	bool bSoundPlayed = false;
 };

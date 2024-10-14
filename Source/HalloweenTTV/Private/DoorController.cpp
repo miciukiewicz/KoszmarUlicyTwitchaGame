@@ -16,6 +16,8 @@ ADoorController::ADoorController()
 
 	SoundCue = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 	SoundCue->SetupAttachment(DoorMesh);
+	SoundCue->SetRelativeLocation(FVector(45.f, -250.f, 125.f));
+
 	SoundCue->bAutoActivate = false;
 }
 
@@ -28,7 +30,12 @@ void ADoorController::OnInteract()
 	{
 		if (SoundCue == nullptr) return;
 
-		SoundCue->Play();
+		if (bSoundPlayed == false)
+		{
+			bSoundPlayed = true;
+			SoundCue->Play();
+			return;
+		}
 		return;
 	}
 		
