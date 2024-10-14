@@ -4,14 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/TimelineComponent.h"
 #include "DoorController.generated.h"
 
 UCLASS()
 class HALLOWEENTTV_API ADoorController : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ADoorController();
 	void OnInteract();
@@ -21,8 +22,26 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-private:	
+	FTimeline Timeline;
+	UPROPERTY(EditAnywhere)
+	UCurveFloat* CurveFloat;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bIsDoorClosed = true;
+
+	UPROPERTY(EditAnywhere)
+	float DoorRotateAngle = 90.f;
+
+	UFUNCTION()
+	void OpenDoor(float value);
+
+	UPROPERTY(EditAnywhere)
+	bool LockedDoor = false;
+
+	UPROPERTY(EditAnywhere)
+	class UAudioComponent* SoundCue;
+
+private:
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	class UStaticMeshComponent* DoorMesh;
-
 };

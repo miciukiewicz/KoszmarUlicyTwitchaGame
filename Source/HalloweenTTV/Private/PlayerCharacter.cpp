@@ -7,6 +7,7 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "DoorController.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -24,9 +25,6 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-
-	
 }
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
@@ -52,8 +50,19 @@ void APlayerCharacter::Look(const FInputActionValue& Value)
 
 void APlayerCharacter::Interact()
 {
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
+	if (Camera == nullptr) return;
+
+	FHitResult HitResult;
+	FVector Start = Camera->GetComponentLocation();
+	FVector End = Start + Camera->GetForwardVector() * InteractLineTraceLength;
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
+
+	ADoorController* door = Cast<ADoorController>(HitResult.GetActor());
+
+	if (door)
+	{
+		door->OnInteract();
+	}
 }
 
 // Called every frame

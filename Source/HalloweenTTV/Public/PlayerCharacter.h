@@ -27,6 +27,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
+	float InteractLineTraceLength = 350.f; 
+
+	UPROPERTY(EditAnywhere)
 	class UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
