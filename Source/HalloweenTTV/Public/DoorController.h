@@ -41,9 +41,14 @@ protected:
 	UPROPERTY(EditAnywhere)
 	class UAudioComponent* SoundCue;
 
+	UPROPERTY(EditAnywhere)
+	class UAudioComponent* DoorSound;
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Mesh")
 	class UStaticMeshComponent* DoorMesh;
 
 	bool bSoundPlayed = false;
+
+	float fAtStartRotation;
 };

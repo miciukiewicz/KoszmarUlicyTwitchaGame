@@ -3,7 +3,7 @@
 #include "DoorController.h"
 #include "Components\BoxComponent.h"
 #include "Components\AudioComponent.h"
-
+#include "Components\SceneComponent.h"
 
 // Sets default values
 ADoorController::ADoorController()
@@ -14,9 +14,14 @@ ADoorController::ADoorController()
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	DoorMesh->SetupAttachment(RootComponent);
 
-	SoundCue = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	SoundCue = CreateDefaultSubobject<UAudioComponent>(TEXT("BehindDoorSound"));
 	SoundCue->SetupAttachment(DoorMesh);
 	SoundCue->SetRelativeLocation(FVector(45.f, -250.f, 125.f));
+
+	DoorSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DoorSound"));
+	DoorSound->SetupAttachment(DoorMesh);
+	DoorSound->SetRelativeLocation(FVector(45.f, 0.f, 90.f));
+
 
 	SoundCue->bAutoActivate = false;
 }
@@ -56,6 +61,8 @@ void ADoorController::OnInteract()
 void ADoorController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	fAtStartRotation = DoorMesh->GetRelativeRotation().Yaw;
 	
 	if (CurveFloat)
 	{
@@ -76,7 +83,7 @@ void ADoorController::Tick(float DeltaTime)
 
 void ADoorController::OpenDoor(float value)
 {
-	FRotator Rot = FRotator(0.f, DoorRotateAngle * value, 0.f);
+	FRotator Rot = FRotator(0.f, fAtStartRotation + (DoorRotateAngle * value), 0.f);
 
 	DoorMesh->SetRelativeRotation(Rot);
 }
