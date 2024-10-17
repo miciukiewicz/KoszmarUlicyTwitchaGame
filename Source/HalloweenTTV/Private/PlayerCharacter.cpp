@@ -7,24 +7,46 @@
 #include "InputMappingContext.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components\AudioComponent.h"
 #include "DoorController.h"
+
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Player Camera"));
 	Camera->SetupAttachment(RootComponent);
 	Camera->bUsePawnControlRotation = true;
 
+	StepSoundCue = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	StepSoundCue->SetupAttachment(Camera);
+	StepSoundCue->SetRelativeLocation(FVector(0.f, 0.f, -44.f));
+	StepSoundCue->bAutoActivate = false;
 }
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetWorld()->GetTimerManager().SetTimer(
+		FootstepTimerHandle, // handle to cancel timer at a later time
+		this, // the owning object
+		&APlayerCharacter::PlayFootstepSound, // function to call on elapsed
+		0.5f, // float delay until elapsed
+		true); // looping?
+}
+
+void APlayerCharacter::PlayFootstepSound()
+{
+	double vel = GetVelocity().Length();
+	if (vel > 5 || vel < -5)
+	{
+		StepSoundCue->Play();
+	}
 }
 
 void APlayerCharacter::Move(const FInputActionValue& Value)
@@ -69,6 +91,8 @@ void APlayerCharacter::Interact()
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+
 }
 
 // Called to bind functionality to input

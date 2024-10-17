@@ -22,7 +22,7 @@ ADoorController::ADoorController()
 	DoorSound->SetupAttachment(DoorMesh);
 	DoorSound->SetRelativeLocation(FVector(45.f, 0.f, 90.f));
 
-
+	DoorSound->bAutoActivate = false;
 	SoundCue->bAutoActivate = false;
 }
 

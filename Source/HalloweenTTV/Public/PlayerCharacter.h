@@ -44,7 +44,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputAction* InteractAction;
 
+	UPROPERTY(EditAnywhere)
+	class UAudioComponent* StepSoundCue;
+
+	void PlayFootstepSound();
+
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Interact();
+	FTimerHandle FootstepTimerHandle;
+
 };
