@@ -1,14 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SoundJumpscareTemplateActor.h"
 #include "Components\BoxComponent.h"
 #include "Components\AudioComponent.h"
 #include "DrawDebugHelpers.h"
 
-// Sets default values
 ASoundJumpscareTemplateActor::ASoundJumpscareTemplateActor()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
@@ -21,7 +18,6 @@ ASoundJumpscareTemplateActor::ASoundJumpscareTemplateActor()
 	BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &ASoundJumpscareTemplateActor::OnBoxBeginOverlap);
 }
 
-// Called when the game starts or when spawned
 void ASoundJumpscareTemplateActor::BeginPlay()
 {
 	Super::BeginPlay();

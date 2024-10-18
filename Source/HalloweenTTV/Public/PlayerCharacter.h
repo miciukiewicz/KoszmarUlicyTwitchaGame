@@ -1,10 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "MyHUD.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -13,17 +12,13 @@ class HALLOWEENTTV_API APlayerCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	APlayerCharacter();
 
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere)
@@ -31,6 +26,12 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	class UCameraComponent* Camera;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UMyHUD> HUDClass;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UMyHUD* HUDWidget;
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputMappingContext* InputMapping;
@@ -53,5 +54,7 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void Interact();
 	FTimerHandle FootstepTimerHandle;
+	FTimerHandle HUDTimer;
+	void HideHUD();
 
 };

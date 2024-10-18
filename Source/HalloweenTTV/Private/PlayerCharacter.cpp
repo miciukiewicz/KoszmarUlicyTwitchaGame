@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
@@ -9,12 +6,12 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components\AudioComponent.h"
 #include "DoorController.h"
+#include "Kismet\GameplayStatics.h"
+#include "CandyActor.h"
 
 
-// Sets default values
 APlayerCharacter::APlayerCharacter()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Player Camera"));
@@ -27,7 +24,6 @@ APlayerCharacter::APlayerCharacter()
 	StepSoundCue->bAutoActivate = false;
 }
 
-// Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -38,6 +34,17 @@ void APlayerCharacter::BeginPlay()
 		&APlayerCharacter::PlayFootstepSound, // function to call on elapsed
 		0.5f, // float delay until elapsed
 		true); // looping?
+
+
+	if (HUDClass)
+	{
+		HUDWidget = CreateWidget<UMyHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0), HUDClass);
+		if (HUDWidget)
+		{
+			HUDWidget->AddToViewport();
+			HUDWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
 }
 
 void APlayerCharacter::PlayFootstepSound()
@@ -80,22 +87,36 @@ void APlayerCharacter::Interact()
 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
 
 	ADoorController* door = Cast<ADoorController>(HitResult.GetActor());
+	ACandyActor* candy = Cast<ACandyActor>(HitResult.GetActor());
 
 	if (door)
 	{
 		door->OnInteract();
 	}
+	else if (candy)
+	{
+		candy->OnInteract();
+		HUDWidget->SetScoreText();
+		HUDWidget->SetVisibility(ESlateVisibility::Visible);
+		GetWorld()->GetTimerManager().SetTimer(
+			HUDTimer, // handle to cancel timer at a later time
+			this, // the owning object
+			&APlayerCharacter::HideHUD, // function to call on elapsed
+			4.f, // float delay until elapsed
+			false); // looping?
+	}
 }
 
-// Called every frame
+void APlayerCharacter::HideHUD()
+{
+	HUDWidget->SetVisibility(ESlateVisibility::Hidden);
+}
+
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-
 }
 
-// Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
