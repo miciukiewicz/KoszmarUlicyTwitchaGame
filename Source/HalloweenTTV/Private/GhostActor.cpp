@@ -36,7 +36,7 @@ void AGhostActor::Tick(float DeltaTime)
 
 	FVector Location = GetActorLocation();
 
-	Location += GetActorForwardVector() * (100 * DeltaTime);
+	Location += GetActorForwardVector() * (GhostSpeed * DeltaTime);
 
 	SetActorLocation(Location);
 }

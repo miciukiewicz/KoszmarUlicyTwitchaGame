@@ -25,6 +25,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	class UAudioComponent* GhostSoundCue;
 
+	UPROPERTY(EditAnywhere)
+	int GhostSpeed;
+
 	FVector Direction;
 	FVector StartLocation;
 	float TotalDistance;
