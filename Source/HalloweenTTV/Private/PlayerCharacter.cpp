@@ -8,6 +8,7 @@
 #include "DoorController.h"
 #include "Kismet\GameplayStatics.h"
 #include "CandyActor.h"
+#include "GhostActor.h"
 
 
 APlayerCharacter::APlayerCharacter()
@@ -22,6 +23,14 @@ APlayerCharacter::APlayerCharacter()
 	StepSoundCue->SetupAttachment(Camera);
 	StepSoundCue->SetRelativeLocation(FVector(0.f, 0.f, -44.f));
 	StepSoundCue->bAutoActivate = false;
+
+	PickUpSound = CreateDefaultSubobject<UAudioComponent>(TEXT("PickUpSoundCue"));
+	PickUpSound->SetupAttachment(Camera);
+	PickUpSound->bAutoActivate = false;
+
+	TimerSound = CreateDefaultSubobject<UAudioComponent>(TEXT("TimerSound"));
+	TimerSound->SetupAttachment(Camera);
+	TimerSound->bAutoActivate = false;
 }
 
 void APlayerCharacter::BeginPlay()
@@ -35,6 +44,13 @@ void APlayerCharacter::BeginPlay()
 		0.5f, // float delay until elapsed
 		true); // looping?
 
+	GetWorld()->GetTimerManager().SetTimer(
+		HUDTimer, // handle to cancel timer at a later time
+		this, // the owning object
+		&APlayerCharacter::SetTimerOnHUD, // function to call on elapsed
+		0.5f, // float delay until elapsed
+		true); // looping?
+
 
 	if (HUDClass)
 	{
@@ -42,7 +58,6 @@ void APlayerCharacter::BeginPlay()
 		if (HUDWidget)
 		{
 			HUDWidget->AddToViewport();
-			HUDWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 }
@@ -97,19 +112,29 @@ void APlayerCharacter::Interact()
 	{
 		candy->OnInteract();
 		HUDWidget->SetScoreText();
-		HUDWidget->SetVisibility(ESlateVisibility::Visible);
-		GetWorld()->GetTimerManager().SetTimer(
-			HUDTimer, // handle to cancel timer at a later time
-			this, // the owning object
-			&APlayerCharacter::HideHUD, // function to call on elapsed
-			4.f, // float delay until elapsed
-			false); // looping?
+		PickUpSound->Play();
 	}
 }
 
-void APlayerCharacter::HideHUD()
+void APlayerCharacter::SetTimerOnHUD()
 {
-	HUDWidget->SetVisibility(ESlateVisibility::Hidden);
+
+	minutes++;
+	if (minutes == 60)
+	{
+		hours++;
+		minutes = 0;
+	}
+
+	if (hours == 24)
+	{
+		hours = 0;
+		GetWorldTimerManager().ClearTimer(HUDTimer);
+		TimerSound->Play();
+		GetWorld()->SpawnActor<AActor>(ProjectileClass, FVector(1500, -110, 190), GetActorRotation());
+	}
+	
+	HUDWidget->SetTimer(hours, minutes);
 }
 
 void APlayerCharacter::Tick(float DeltaTime)

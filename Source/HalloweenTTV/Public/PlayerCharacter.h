@@ -33,6 +33,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UMyHUD* HUDWidget;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UMyHUD* HUDWidgetTimer;
+
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputMappingContext* InputMapping;
 
@@ -48,13 +51,22 @@ protected:
 	UPROPERTY(EditAnywhere)
 	class UAudioComponent* StepSoundCue;
 
-	void PlayFootstepSound();
+	UPROPERTY(EditAnywhere)
+	class UAudioComponent* PickUpSound;
 
+	UPROPERTY(EditAnywhere)
+	class UAudioComponent* TimerSound;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> ProjectileClass;
+
+	void PlayFootstepSound();
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Interact();
 	FTimerHandle FootstepTimerHandle;
 	FTimerHandle HUDTimer;
-	void HideHUD();
-
+	void SetTimerOnHUD();
+	int hours = 20;
+	int minutes = 0;
 };

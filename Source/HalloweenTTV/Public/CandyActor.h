@@ -21,5 +21,4 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Mesh")
 	class UStaticMeshComponent* CandyMesh;
-
 };

@@ -1,5 +1,6 @@
-#include "MyGameInstance.h"
 #include "CandyActor.h"
+#include "MyGameInstance.h"
+#include "Components\AudioComponent.h"
 
 ACandyActor::ACandyActor()
 {
@@ -23,7 +24,6 @@ void ACandyActor::Tick(float DeltaTime)
 	FQuat QuatRotation = FQuat(NewRotation);
 
 	AddActorLocalRotation(QuatRotation, false, 0, ETeleportType::None);
-
 }
 
 void ACandyActor::OnInteract()
