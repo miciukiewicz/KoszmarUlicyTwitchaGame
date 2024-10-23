@@ -1,5 +1,15 @@
 #include "MyHUD.h"
 #include "MyGameInstance.h"
+#include "Kismet\GameplayStatics.h"
+#include "PlayerCharacter.h"
+
+void UMyHUD::NativeConstruct()
+{
+	Super::NativeConstruct();
+
+	ResumeButton->OnClicked.AddDynamic(this, &UMyHUD::ResumeGame);
+	MenuButton->OnClicked.AddDynamic(this, &UMyHUD::MenuExit);
+}
 
 void UMyHUD::SetScoreText()
 {
@@ -45,4 +55,39 @@ void UMyHUD::SetTimerVis()
 void UMyHUD::SetInteractVisibility(bool value)
 {
 	InteractText->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+}
+
+void UMyHUD::SetPauseMenuVisibility(bool value)
+{
+	if (value)
+	{
+		PlayerHUD->SetVisibility(ESlateVisibility::Hidden);
+		PauseMenuHUD->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		PlayerHUD->SetVisibility(ESlateVisibility::Visible);
+		PauseMenuHUD->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void UMyHUD::ResumeGame()
+{
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("START"));
+
+	SetPauseMenuVisibility(false);
+	UGameplayStatics::SetGamePaused(GetWorld(), false);
+	APlayerController* playerCont = GetWorld()->GetFirstPlayerController();
+	if (playerCont)
+	{
+		playerCont->bShowMouseCursor = false;
+		playerCont->bEnableClickEvents = false;
+		playerCont->bEnableMouseOverEvents = false;
+	}
+}
+
+void UMyHUD::MenuExit()
+{
+	UGameplayStatics::OpenLevel(this, FName("MainMenu"), true);
 }

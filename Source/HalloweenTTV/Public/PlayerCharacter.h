@@ -20,6 +20,8 @@ public:
 
 	void SetInteractVisibility(bool value);
 
+	bool PauseMenu = false;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -50,6 +52,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputAction* ZoomAction;
 
+	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+	class UInputAction* PauseMenuAction;
+
 	UPROPERTY(EditAnywhere)
 	class UAudioComponent* StepSoundCue;
 
@@ -68,6 +73,7 @@ protected:
 	void Interact();
 	void ZoomIn();
 	void ZoomOut();
+	void PauseMenuVis();
 	FTimerHandle FootstepTimerHandle;
 	FTimerHandle HUDTimer;
 	void SetTimerOnHUD();

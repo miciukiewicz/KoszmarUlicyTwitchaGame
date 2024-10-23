@@ -3,12 +3,16 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components\TextBlock.h"
+#include <Components\CanvasPanel.h>
+#include <Components\Button.h>
 #include "MyHUD.generated.h"
 
 UCLASS()
 class HALLOWEENTTV_API UMyHUD : public UUserWidget
 {
 	GENERATED_BODY()
+
+	void NativeConstruct();
 
 public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
@@ -20,6 +24,18 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock* InteractText;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCanvasPanel* PlayerHUD;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCanvasPanel* PauseMenuHUD;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* ResumeButton;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* MenuButton;
+
 	void SetScoreText();
 
 	void SetTimer(int hours, int minutes);
@@ -29,6 +45,14 @@ public:
 	void SetTimerVis();
 
 	void SetInteractVisibility(bool value);
+
+	void SetPauseMenuVisibility(bool value);
+
+	UFUNCTION()
+	void ResumeGame();
+
+	UFUNCTION()
+	void MenuExit();
 
 	bool bHUDVis = true;
 };

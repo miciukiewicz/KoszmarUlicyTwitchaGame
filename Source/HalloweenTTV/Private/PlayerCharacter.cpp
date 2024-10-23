@@ -47,9 +47,9 @@ void APlayerCharacter::BeginPlay()
 
 	GetWorld()->GetTimerManager().SetTimer(
 		HUDTimer,
-		this, 
-		&APlayerCharacter::SetTimerOnHUD, 
-		0.5f, 
+		this,
+		&APlayerCharacter::SetTimerOnHUD,
+		0.5f,
 		true);
 
 
@@ -60,6 +60,8 @@ void APlayerCharacter::BeginPlay()
 		{
 			HUDWidget->AddToViewport();
 			HUDWidget->SetInteractVisibility(false);
+			HUDWidget->SetPauseMenuVisibility(false);
+
 		}
 	}
 }
@@ -133,9 +135,22 @@ void APlayerCharacter::ZoomIn()
 	Camera->SetFieldOfView(45.f);
 }
 
+void APlayerCharacter::PauseMenuVis()
+{
+	HUDWidget->SetPauseMenuVisibility(true);
+	PauseMenu = true;
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
+	APlayerController* playerCont = GetWorld()->GetFirstPlayerController();
+	if (playerCont)
+	{
+		playerCont->bShowMouseCursor = true;
+		playerCont->bEnableClickEvents = true;
+		playerCont->bEnableMouseOverEvents = true;
+	}
+}
+
 void APlayerCharacter::SetTimerOnHUD()
 {
-
 	minutes++;
 	if (minutes == 60)
 	{
@@ -150,7 +165,7 @@ void APlayerCharacter::SetTimerOnHUD()
 		TimerSound->Play();
 		GetWorld()->SpawnActor<AActor>(ProjectileClass, FVector(1500, -110, 190), GetActorRotation());
 	}
-	
+
 	HUDWidget->SetTimer(hours, minutes);
 }
 
@@ -183,5 +198,6 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Interact);
 		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Started, this, &APlayerCharacter::ZoomIn);
 		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Completed, this, &APlayerCharacter::ZoomOut);
+		EnhancedInputComponent->BindAction(PauseMenuAction, ETriggerEvent::Triggered, this, &APlayerCharacter::PauseMenuVis);
 	}
 }
