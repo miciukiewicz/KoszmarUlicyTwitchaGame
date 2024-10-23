@@ -123,6 +123,16 @@ void APlayerCharacter::Interact()
 	}
 }
 
+void APlayerCharacter::ZoomOut()
+{
+	Camera->SetFieldOfView(90.f);
+}
+
+void APlayerCharacter::ZoomIn()
+{
+	Camera->SetFieldOfView(45.f);
+}
+
 void APlayerCharacter::SetTimerOnHUD()
 {
 
@@ -171,5 +181,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(MovementAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Look);
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Interact);
+		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Started, this, &APlayerCharacter::ZoomIn);
+		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Completed, this, &APlayerCharacter::ZoomOut);
 	}
 }

@@ -47,6 +47,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputAction* InteractAction;
 
+	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+	class UInputAction* ZoomAction;
+
 	UPROPERTY(EditAnywhere)
 	class UAudioComponent* StepSoundCue;
 
@@ -63,6 +66,8 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Interact();
+	void ZoomIn();
+	void ZoomOut();
 	FTimerHandle FootstepTimerHandle;
 	FTimerHandle HUDTimer;
 	void SetTimerOnHUD();
