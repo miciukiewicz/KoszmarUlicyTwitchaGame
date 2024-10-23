@@ -18,6 +18,8 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void SetInteractVisibility(bool value);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -27,14 +29,11 @@ protected:
 	UPROPERTY(EditAnywhere)
 	class UCameraComponent* Camera;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<UMyHUD> HUDClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UMyHUD* HUDWidget;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	UMyHUD* HUDWidgetTimer;
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputMappingContext* InputMapping;

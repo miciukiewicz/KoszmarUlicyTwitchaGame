@@ -17,6 +17,9 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UTextBlock* TimerText;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UTextBlock* InteractText;
+
 	void SetScoreText();
 
 	void SetTimer(int hours, int minutes);
@@ -24,6 +27,8 @@ public:
 	FTimerHandle HUDTimerVis;
 
 	void SetTimerVis();
+
+	void SetInteractVisibility(bool value);
 
 	bool bHUDVis = true;
 };

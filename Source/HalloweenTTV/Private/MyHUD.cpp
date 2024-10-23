@@ -41,3 +41,8 @@ void UMyHUD::SetTimerVis()
 	bHUDVis = !bHUDVis;
 	TimerText->SetVisibility(bHUDVis ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 }
+
+void UMyHUD::SetInteractVisibility(bool value)
+{
+	InteractText->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+}

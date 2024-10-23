@@ -9,6 +9,7 @@
 #include "Kismet\GameplayStatics.h"
 #include "CandyActor.h"
 #include "GhostActor.h"
+#include "EndgameDoorActor.h"
 
 
 APlayerCharacter::APlayerCharacter()
@@ -45,11 +46,11 @@ void APlayerCharacter::BeginPlay()
 		true); // looping?
 
 	GetWorld()->GetTimerManager().SetTimer(
-		HUDTimer, // handle to cancel timer at a later time
-		this, // the owning object
-		&APlayerCharacter::SetTimerOnHUD, // function to call on elapsed
-		0.5f, // float delay until elapsed
-		true); // looping?
+		HUDTimer,
+		this, 
+		&APlayerCharacter::SetTimerOnHUD, 
+		0.5f, 
+		true);
 
 
 	if (HUDClass)
@@ -58,6 +59,7 @@ void APlayerCharacter::BeginPlay()
 		if (HUDWidget)
 		{
 			HUDWidget->AddToViewport();
+			HUDWidget->SetInteractVisibility(false);
 		}
 	}
 }
@@ -103,6 +105,7 @@ void APlayerCharacter::Interact()
 
 	ADoorController* door = Cast<ADoorController>(HitResult.GetActor());
 	ACandyActor* candy = Cast<ACandyActor>(HitResult.GetActor());
+	AEndgameDoorActor* endgameDoor = Cast<AEndgameDoorActor>(HitResult.GetActor());
 
 	if (door)
 	{
@@ -113,6 +116,10 @@ void APlayerCharacter::Interact()
 		candy->OnInteract();
 		HUDWidget->SetScoreText();
 		PickUpSound->Play();
+	}
+	else if (endgameDoor)
+	{
+		endgameDoor->OnInteract();
 	}
 }
 
@@ -135,6 +142,11 @@ void APlayerCharacter::SetTimerOnHUD()
 	}
 	
 	HUDWidget->SetTimer(hours, minutes);
+}
+
+void APlayerCharacter::SetInteractVisibility(bool value)
+{
+	HUDWidget->SetInteractVisibility(value);
 }
 
 void APlayerCharacter::Tick(float DeltaTime)

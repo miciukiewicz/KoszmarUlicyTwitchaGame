@@ -2,6 +2,7 @@
 #include "Components\BoxComponent.h"
 #include "Components\AudioComponent.h"
 #include "Components\SceneComponent.h"
+#include "PlayerCharacter.h"
 
 ADoorController::ADoorController()
 {
@@ -13,13 +14,15 @@ ADoorController::ADoorController()
 	SoundCue = CreateDefaultSubobject<UAudioComponent>(TEXT("BehindDoorSound"));
 	SoundCue->SetupAttachment(DoorMesh);
 	SoundCue->SetRelativeLocation(FVector(45.f, -250.f, 125.f));
+	SoundCue->bAutoActivate = false;
 
 	DoorSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DoorSound"));
 	DoorSound->SetupAttachment(DoorMesh);
 	DoorSound->SetRelativeLocation(FVector(45.f, 0.f, 90.f));
-
 	DoorSound->bAutoActivate = false;
-	SoundCue->bAutoActivate = false;
+
+	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	BoxComponent->SetupAttachment(DoorMesh);
 }
 
 void ADoorController::OnInteract()
@@ -66,6 +69,8 @@ void ADoorController::BeginPlay()
 		Timeline.AddInterpFloat(CurveFloat, TimelineProgress);
 	}
 
+	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ADoorController::OnOverlapBegin);
+	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ADoorController::OnEndOverlap);
 }
 
 void ADoorController::Tick(float DeltaTime)
@@ -80,4 +85,30 @@ void ADoorController::OpenDoor(float value)
 	FRotator Rot = FRotator(0.f, fAtStartRotation + (DoorRotateAngle * value), 0.f);
 
 	DoorMesh->SetRelativeRotation(Rot);
+}
+
+void ADoorController::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Close to door"));
+	
+	APlayerCharacter* player = Cast<APlayerCharacter>(OtherActor);
+
+	if (player)
+	{
+		player->SetInteractVisibility(true);
+	}
+}
+
+void ADoorController::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Close to door"));
+
+	APlayerCharacter* player = Cast<APlayerCharacter>(OtherActor);
+
+	if (player)
+	{
+		player->SetInteractVisibility(false);
+	}
 }
