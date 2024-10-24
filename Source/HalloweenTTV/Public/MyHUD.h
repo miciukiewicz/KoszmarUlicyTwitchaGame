@@ -82,6 +82,7 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UCanvasPanel* TimeEndingCanvas;
 
+	UFUNCTION(BlueprintCallable)
 	void SetEnding(int value);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
