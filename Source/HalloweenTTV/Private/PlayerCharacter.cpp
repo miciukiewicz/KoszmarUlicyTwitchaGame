@@ -7,6 +7,7 @@
 #include "Components\AudioComponent.h"
 #include "DoorController.h"
 #include "Kismet\GameplayStatics.h"
+#include "MyGameInstance.h"
 #include "CandyActor.h"
 #include "GhostActor.h"
 #include "GameFramework\CharacterMovementComponent.h"
@@ -65,7 +66,6 @@ void APlayerCharacter::BeginPlay()
 			HUDWidget->AddToViewport();
 			HUDWidget->SetInteractVisibility(false);
 			HUDWidget->SetPauseMenuVisibility(false);
-
 		}
 	}
 }
@@ -127,6 +127,27 @@ void APlayerCharacter::Interact()
 	else if (endgameDoor)
 	{
 		endgameDoor->OnInteract();
+
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		APlayerController* playerCont = GetWorld()->GetFirstPlayerController();
+		if (playerCont)
+		{
+			playerCont->bShowMouseCursor = true;
+			playerCont->bEnableClickEvents = true;
+			playerCont->bEnableMouseOverEvents = true;
+		}
+
+		UMyGameInstance* gameInstance = Cast<UMyGameInstance>(GetWorld()->GetGameInstance());
+		int cuksy = gameInstance->GetScore();
+
+		if (cuksy == 9)
+		{
+			HUDWidget->SetEnding(1);
+		}
+		else
+		{
+			HUDWidget->SetEnding(2);
+		}
 	}
 }
 
@@ -156,6 +177,13 @@ void APlayerCharacter::PauseMenuVis()
 
 void APlayerCharacter::SprintStart()
 {
+	double vel = GetVelocity().Length();
+
+	if ((vel > 2 || vel < -2) == false)
+	{
+		return;
+	}
+
 	UCharacterMovementComponent* characterMovement = GetCharacterMovement();
 	characterMovement->MaxWalkSpeed = WalkSpeed * 2;
 	isRunning = true;
@@ -236,7 +264,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 		sprintEnergy += 0.3f;
 		HUDWidget->SetStaminaProgressBarVisibility(true);
 		HUDWidget->SetStaminaProgressBar(sprintEnergy);
-
 	}
 }
 
@@ -262,6 +289,5 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(PauseMenuAction, ETriggerEvent::Triggered, this, &APlayerCharacter::PauseMenuVis);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &APlayerCharacter::SprintStart);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &APlayerCharacter::SprintEnd);
-
 	}
 }

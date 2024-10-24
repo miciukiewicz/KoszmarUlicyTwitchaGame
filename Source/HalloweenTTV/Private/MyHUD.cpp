@@ -9,13 +9,22 @@ void UMyHUD::NativeConstruct()
 
 	ResumeButton->OnClicked.AddDynamic(this, &UMyHUD::ResumeGame);
 	MenuButton->OnClicked.AddDynamic(this, &UMyHUD::MenuExit);
+	BackTOMenuButton->OnClicked.AddDynamic(this, &UMyHUD::BackToMenu);
+	RetryButton->OnClicked.AddDynamic(this, &UMyHUD::Retry);
+
+	BaseEndingCanvas->SetVisibility(ESlateVisibility::Hidden);
+	GoodEndingCanvas->SetVisibility(ESlateVisibility::Hidden);
+	OkEndingCanvas->SetVisibility(ESlateVisibility::Hidden);
+	CarEndingCanvas->SetVisibility(ESlateVisibility::Hidden);
+	KacEndingCanvas->SetVisibility(ESlateVisibility::Hidden);
+	TimeEndingCanvas->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UMyHUD::SetScoreText()
 {
 	UMyGameInstance* gameInstance = Cast<UMyGameInstance>(GetWorld()->GetGameInstance());
 	int score = gameInstance->GetScore();
-	FString str = FString::Printf(TEXT("Cuksy %d/8"), score);
+	FString str = FString::Printf(TEXT("Cuksy %d/9"), score);
 	ScoreText->SetText(FText::FromString(str));
 }
 
@@ -101,4 +110,45 @@ void UMyHUD::ResumeGame()
 void UMyHUD::MenuExit()
 {
 	UGameplayStatics::OpenLevel(this, FName("MainMenu"), true);
+}
+
+void UMyHUD::SetEnding(int value)
+{
+	BaseEndingCanvas->SetVisibility(ESlateVisibility::Visible);
+
+	switch (value)
+	{
+	case 1:
+		GoodEndingCanvas->SetVisibility(ESlateVisibility::Visible);
+		break;
+	case 2:
+		OkEndingCanvas->SetVisibility(ESlateVisibility::Visible);
+		break;
+	case 3:
+		CarEndingCanvas->SetVisibility(ESlateVisibility::Visible);
+		break;
+	case 4:
+		KacEndingCanvas->SetVisibility(ESlateVisibility::Visible);
+		break;
+	case 5:
+		TimeEndingCanvas->SetVisibility(ESlateVisibility::Visible);
+		break;
+	}
+
+}
+
+void UMyHUD::BackToMenu()
+{
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("BackToMenu"));
+
+	UGameplayStatics::OpenLevel(this, FName("MainMenu"), true);
+}
+
+void UMyHUD::Retry()
+{
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Retry"));
+
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), true);
 }

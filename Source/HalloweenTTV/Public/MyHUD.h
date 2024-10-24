@@ -63,4 +63,36 @@ public:
 	void MenuExit();
 
 	bool bHUDVis = true;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCanvasPanel* BaseEndingCanvas;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCanvasPanel* GoodEndingCanvas;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCanvasPanel* OkEndingCanvas;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCanvasPanel* CarEndingCanvas;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCanvasPanel* KacEndingCanvas;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCanvasPanel* TimeEndingCanvas;
+
+	void SetEnding(int value);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UButton* BackTOMenuButton;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	UButton* RetryButton;
+
+	UFUNCTION(BlueprintCallable)
+	void BackToMenu();
+
+	UFUNCTION(BlueprintCallable)
+	void Retry();
 };
