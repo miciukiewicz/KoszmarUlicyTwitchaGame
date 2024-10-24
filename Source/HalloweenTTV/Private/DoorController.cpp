@@ -88,10 +88,7 @@ void ADoorController::OpenDoor(float value)
 }
 
 void ADoorController::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Close to door"));
-	
+{	
 	APlayerCharacter* player = Cast<APlayerCharacter>(OtherActor);
 
 	if (player)
@@ -102,9 +99,6 @@ void ADoorController::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 
 void ADoorController::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Close to door"));
-
 	APlayerCharacter* player = Cast<APlayerCharacter>(OtherActor);
 
 	if (player)

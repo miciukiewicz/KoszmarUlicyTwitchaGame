@@ -9,6 +9,7 @@
 #include "Kismet\GameplayStatics.h"
 #include "CandyActor.h"
 #include "GhostActor.h"
+#include "GameFramework\CharacterMovementComponent.h"
 #include "EndgameDoorActor.h"
 
 
@@ -37,6 +38,9 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UCharacterMovementComponent* characterMovement = GetCharacterMovement();
+	WalkSpeed = characterMovement->MaxWalkSpeed;
 
 	GetWorld()->GetTimerManager().SetTimer(
 		FootstepTimerHandle, // handle to cancel timer at a later time
@@ -69,6 +73,7 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::PlayFootstepSound()
 {
 	double vel = GetVelocity().Length();
+
 	if (vel > 5 || vel < -5)
 	{
 		StepSoundCue->Play();
@@ -149,6 +154,39 @@ void APlayerCharacter::PauseMenuVis()
 	}
 }
 
+void APlayerCharacter::SprintStart()
+{
+	UCharacterMovementComponent* characterMovement = GetCharacterMovement();
+	characterMovement->MaxWalkSpeed = WalkSpeed * 2;
+	isRunning = true;
+
+	GetWorld()->GetTimerManager().ClearTimer(FootstepTimerHandle);
+
+	GetWorld()->GetTimerManager().SetTimer(
+		FootstepTimerHandle, // handle to cancel timer at a later time
+		this, // the owning object
+		&APlayerCharacter::PlayFootstepSound, // function to call on elapsed
+		0.25f, // float delay until elapsed
+		true); // looping?
+
+}
+
+void APlayerCharacter::SprintEnd()
+{
+	isRunning = false;
+	UCharacterMovementComponent* characterMovement = GetCharacterMovement();
+	characterMovement->MaxWalkSpeed = WalkSpeed;
+
+	GetWorld()->GetTimerManager().ClearTimer(FootstepTimerHandle);
+
+	GetWorld()->GetTimerManager().SetTimer(
+		FootstepTimerHandle, // handle to cancel timer at a later time
+		this, // the owning object
+		&APlayerCharacter::PlayFootstepSound, // function to call on elapsed
+		0.5f, // float delay until elapsed
+		true); // looping?
+}
+
 void APlayerCharacter::SetTimerOnHUD()
 {
 	minutes++;
@@ -177,6 +215,29 @@ void APlayerCharacter::SetInteractVisibility(bool value)
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (isRunning)
+	{
+		sprintEnergy -= 0.5f;
+		HUDWidget->SetStaminaProgressBarVisibility(true);
+		HUDWidget->SetStaminaProgressBar(sprintEnergy);
+		if (sprintEnergy <= 0.f)
+		{
+			SprintEnd();
+		}
+	}
+	else
+	{
+		if (sprintEnergy >= 100.f)
+		{
+			HUDWidget->SetStaminaProgressBarVisibility(false);
+			return;
+		}
+		sprintEnergy += 0.3f;
+		HUDWidget->SetStaminaProgressBarVisibility(true);
+		HUDWidget->SetStaminaProgressBar(sprintEnergy);
+
+	}
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -199,5 +260,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Started, this, &APlayerCharacter::ZoomIn);
 		EnhancedInputComponent->BindAction(ZoomAction, ETriggerEvent::Completed, this, &APlayerCharacter::ZoomOut);
 		EnhancedInputComponent->BindAction(PauseMenuAction, ETriggerEvent::Triggered, this, &APlayerCharacter::PauseMenuVis);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &APlayerCharacter::SprintStart);
+		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &APlayerCharacter::SprintEnd);
+
 	}
 }

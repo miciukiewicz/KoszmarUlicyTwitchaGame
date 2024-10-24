@@ -4,6 +4,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components\TextBlock.h"
 #include <Components\CanvasPanel.h>
+#include "Components\ProgressBar.h"
 #include <Components\Button.h>
 #include "MyHUD.generated.h"
 
@@ -36,6 +37,9 @@ public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	UButton* MenuButton;
 
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UProgressBar* StaminaProgressBar;
+
 	void SetScoreText();
 
 	void SetTimer(int hours, int minutes);
@@ -47,6 +51,10 @@ public:
 	void SetInteractVisibility(bool value);
 
 	void SetPauseMenuVisibility(bool value);
+
+	void SetStaminaProgressBar(float value);
+
+	void SetStaminaProgressBarVisibility(bool value);
 
 	UFUNCTION()
 	void ResumeGame();

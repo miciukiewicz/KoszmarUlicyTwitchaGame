@@ -71,6 +71,17 @@ void UMyHUD::SetPauseMenuVisibility(bool value)
 	}
 }
 
+void UMyHUD::SetStaminaProgressBar(float value)
+{
+	float staminaNormalized = value / 100.f;
+	StaminaProgressBar->SetPercent(staminaNormalized);
+}
+
+void UMyHUD::SetStaminaProgressBarVisibility(bool value)
+{
+	StaminaProgressBar->SetVisibility(value ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
+}
+
 void UMyHUD::ResumeGame()
 {
 	if (GEngine)

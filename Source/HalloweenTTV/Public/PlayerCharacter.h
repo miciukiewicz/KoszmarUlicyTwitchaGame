@@ -55,6 +55,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputAction* PauseMenuAction;
 
+	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+	class UInputAction* SprintAction;
+
 	UPROPERTY(EditAnywhere)
 	class UAudioComponent* StepSoundCue;
 
@@ -74,9 +77,18 @@ protected:
 	void ZoomIn();
 	void ZoomOut();
 	void PauseMenuVis();
+	void SprintStart();
+	void SprintEnd();
+	float WalkSpeed;
 	FTimerHandle FootstepTimerHandle;
 	FTimerHandle HUDTimer;
+	FTimerHandle useSprintEnergy;
+	FTimerHandle regenSprintEnergy;
+	void RemoveSprintEnergy();
+	void AddSprintEnergy();
+	float sprintEnergy = 100.f;
 	void SetTimerOnHUD();
 	int hours = 20;
 	int minutes = 0;
+	bool isRunning = false;
 };
