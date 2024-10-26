@@ -54,7 +54,7 @@ void APlayerCharacter::BeginPlay()
 		HUDTimer,
 		this,
 		&APlayerCharacter::SetTimerOnHUD,
-		0.5f,
+		5.f,
 		true);
 
 
