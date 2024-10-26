@@ -31,10 +31,10 @@ protected:
 	UPROPERTY(EditAnywhere)
 	class UCameraComponent* Camera;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSubclassOf<UMyHUD> HUDClass;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	UMyHUD* HUDWidget;
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
@@ -84,8 +84,6 @@ protected:
 	FTimerHandle HUDTimer;
 	FTimerHandle useSprintEnergy;
 	FTimerHandle regenSprintEnergy;
-	void RemoveSprintEnergy();
-	void AddSprintEnergy();
 	float sprintEnergy = 100.f;
 	void SetTimerOnHUD();
 	int hours = 20;
