@@ -12,6 +12,7 @@ class HALLOWEENTTV_API UMyGameInstance : public UGameInstance
 public:
 	void AddScore();
 	int GetScore();
+	void ResetScore();
 
 private:
 	int Score;

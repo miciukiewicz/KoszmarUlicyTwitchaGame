@@ -24,8 +24,16 @@ void UMyHUD::SetScoreText()
 {
 	UMyGameInstance* gameInstance = Cast<UMyGameInstance>(GetWorld()->GetGameInstance());
 	int score = gameInstance->GetScore();
-	FString str = FString::Printf(TEXT("Cuksy %d/9"), score);
-	ScoreText->SetText(FText::FromString(str));
+	if (score == 9)
+	{
+		FString str = FString::Printf(TEXT("Wracaj do domu"), score);
+		ScoreText->SetText(FText::FromString(str));
+	}
+	else
+	{
+		FString str = FString::Printf(TEXT("Cuksy %d/9"), score);
+		ScoreText->SetText(FText::FromString(str));
+	}
 }
 
 void UMyHUD::SetTimer(int hours, int minutes)

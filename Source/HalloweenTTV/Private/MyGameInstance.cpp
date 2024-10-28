@@ -15,3 +15,10 @@ int UMyGameInstance::GetScore()
 {
 	return Score;
 }
+
+void UMyGameInstance::ResetScore()
+{
+	Score = 0;
+}
+
+

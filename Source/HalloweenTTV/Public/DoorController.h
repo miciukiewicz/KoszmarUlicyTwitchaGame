@@ -57,4 +57,9 @@ private:
 	bool bSoundPlayed = false;
 
 	float fAtStartRotation;
+
+	FTimerHandle DelayForSoundCue;
+
+	void PlaySoundCue();
+
 };

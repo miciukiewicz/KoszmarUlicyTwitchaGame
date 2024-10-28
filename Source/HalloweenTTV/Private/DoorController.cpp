@@ -30,6 +30,11 @@ void ADoorController::OnInteract()
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Trying to open the door"));
 
+	if (DoorSound != nullptr)
+	{
+		DoorSound->Play();
+	}
+
 	if (LockedDoor)
 	{
 		if (SoundCue == nullptr) return;
@@ -37,7 +42,14 @@ void ADoorController::OnInteract()
 		if (bSoundPlayed == false)
 		{
 			bSoundPlayed = true;
-			SoundCue->Play();
+
+			GetWorld()->GetTimerManager().SetTimer(
+				DelayForSoundCue, // handle to cancel timer at a later time
+				this, // the owning object
+				&ADoorController::PlaySoundCue, // function to call on elapsed
+				1.25f, // float delay until elapsed
+				false); // looping?
+
 			return;
 		}
 		return;
@@ -105,4 +117,9 @@ void ADoorController::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 	{
 		player->SetInteractVisibility(false);
 	}
+}
+
+void ADoorController::PlaySoundCue()
+{
+	SoundCue->Play();
 }

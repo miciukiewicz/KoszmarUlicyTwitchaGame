@@ -68,6 +68,9 @@ void APlayerCharacter::BeginPlay()
 			HUDWidget->SetPauseMenuVisibility(false);
 		}
 	}
+
+	UMyGameInstance* gameInstance = Cast<UMyGameInstance>(GetWorld()->GetGameInstance());
+	gameInstance->ResetScore();
 }
 
 void APlayerCharacter::PlayFootstepSound()
