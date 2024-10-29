@@ -44,20 +44,20 @@ void AEndgameDoorActor::Tick(float DeltaTime)
 
 void AEndgameDoorActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	APlayerCharacter* player = Cast<APlayerCharacter>(OtherActor);
+	//APlayerCharacter* player = Cast<APlayerCharacter>(OtherActor);
 
-	if (player)
-	{
-		player->SetInteractVisibility(true);
-	}
+	//if (player)
+	//{
+	//	player->SetInteractVisibility(true);
+	//}
 }
 
 void AEndgameDoorActor::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	APlayerCharacter* player = Cast<APlayerCharacter>(OtherActor);
+	//APlayerCharacter* player = Cast<APlayerCharacter>(OtherActor);
 
-	if (player)
-	{
-		player->SetInteractVisibility(false);
-	}
+	//if (player)
+	//{
+	//	player->SetInteractVisibility(false);
+	//}
 }

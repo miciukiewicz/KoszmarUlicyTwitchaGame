@@ -12,6 +12,7 @@
 #include "GhostActor.h"
 #include "GameFramework\CharacterMovementComponent.h"
 #include "EndgameDoorActor.h"
+#include "CatActor.h"
 
 
 APlayerCharacter::APlayerCharacter()
@@ -116,6 +117,7 @@ void APlayerCharacter::Interact()
 	ADoorController* door = Cast<ADoorController>(HitResult.GetActor());
 	ACandyActor* candy = Cast<ACandyActor>(HitResult.GetActor());
 	AEndgameDoorActor* endgameDoor = Cast<AEndgameDoorActor>(HitResult.GetActor());
+	ACatActor* cat = Cast<ACatActor>(HitResult.GetActor());
 
 	if (door)
 	{
@@ -151,6 +153,10 @@ void APlayerCharacter::Interact()
 		{
 			HUDWidget->SetEnding(2);
 		}
+	}
+	else if (cat)
+	{
+		cat->OnInteract();
 	}
 }
 
@@ -246,6 +252,27 @@ void APlayerCharacter::SetInteractVisibility(bool value)
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	FHitResult HitResult;
+	FVector Start = Camera->GetComponentLocation();
+	FVector End = Start + Camera->GetForwardVector() * InteractLineTraceLength;
+	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
+
+	ADoorController* door = Cast<ADoorController>(HitResult.GetActor());
+	ACandyActor* candy = Cast<ACandyActor>(HitResult.GetActor());
+	AEndgameDoorActor* endgameDoor = Cast<AEndgameDoorActor>(HitResult.GetActor());
+	ACatActor* cat = Cast<ACatActor>(HitResult.GetActor());
+
+
+	if (door || candy || endgameDoor || cat)
+	{
+		SetInteractVisibility(true);
+	}
+	else
+	{
+		SetInteractVisibility(false);
+	}
+
 
 	if (isRunning)
 	{
