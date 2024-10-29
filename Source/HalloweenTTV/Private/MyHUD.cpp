@@ -11,6 +11,8 @@ void UMyHUD::NativeConstruct()
 	MenuButton->OnClicked.AddDynamic(this, &UMyHUD::MenuExit);
 	BackTOMenuButton->OnClicked.AddDynamic(this, &UMyHUD::BackToMenu);
 	RetryButton->OnClicked.AddDynamic(this, &UMyHUD::Retry);
+	OptionsButton->OnClicked.AddDynamic(this, &UMyHUD::OpenSettings);
+	BackToPauseButton->OnClicked.AddDynamic(this, &UMyHUD::BackToPauseMenu);
 
 	BaseEndingCanvas->SetVisibility(ESlateVisibility::Hidden);
 	GoodEndingCanvas->SetVisibility(ESlateVisibility::Hidden);
@@ -18,6 +20,7 @@ void UMyHUD::NativeConstruct()
 	CarEndingCanvas->SetVisibility(ESlateVisibility::Hidden);
 	KacEndingCanvas->SetVisibility(ESlateVisibility::Hidden);
 	TimeEndingCanvas->SetVisibility(ESlateVisibility::Hidden);
+	OptionCanvas->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UMyHUD::SetScoreText()
@@ -159,4 +162,29 @@ void UMyHUD::Retry()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Retry"));
 
 	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), true);
+}
+
+void UMyHUD::OpenSettings()
+{
+		if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("START"));
+
+	PauseMenuHUD->SetVisibility(ESlateVisibility::Hidden);
+	OptionCanvas->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UMyHUD::BackToPauseMenu()
+{
+	OptionCanvas->SetVisibility(ESlateVisibility::Hidden);
+	PauseMenuHUD->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UMyHUD::SetValueMouseSlider(float value)
+{
+	MouseSlider->SetValue(value);
+}
+
+void UMyHUD::SetValueAudioSlider(float value)
+{
+	AudioSlider->SetValue(value);
 }

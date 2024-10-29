@@ -13,6 +13,11 @@ public:
 	void AddScore();
 	int GetScore();
 	void ResetScore();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SavedSensValue = 0.5f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SavedAudioValue = 1.f;
 
 private:
 	int Score;

@@ -22,6 +22,9 @@ public:
 
 	bool PauseMenu = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ValueFromOptions;
+
 protected:
 	virtual void BeginPlay() override;
 

@@ -6,6 +6,7 @@
 #include <Components\CanvasPanel.h>
 #include "Components\ProgressBar.h"
 #include <Components\Button.h>
+#include "Components\Slider.h"
 #include "MyHUD.generated.h"
 
 UCLASS()
@@ -96,4 +97,31 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Retry();
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UCanvasPanel* OptionCanvas;
+
+	UFUNCTION(BlueprintCallable)
+	void OpenSettings();
+
+	UFUNCTION(BlueprintCallable)
+	void BackToPauseMenu();
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* OptionsButton;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UButton* BackToPauseButton;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	USlider* MouseSlider;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	USlider* AudioSlider;
+
+	UFUNCTION(BlueprintCallable)
+	void SetValueMouseSlider(float value);
+
+	UFUNCTION(BlueprintCallable)
+	void SetValueAudioSlider(float value);
 };
