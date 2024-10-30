@@ -124,4 +124,16 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetValueAudioSlider(float value);
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	USlider* FPSSlider;
+
+	UFUNCTION(BlueprintCallable)
+	void SetValueFPSSlider(float value);
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	UTextBlock* FPSCounter;
+
+	UFUNCTION(BlueprintCallable)
+	void SetFPSCounterText(float value);
 };

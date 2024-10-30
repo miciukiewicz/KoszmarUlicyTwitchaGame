@@ -19,6 +19,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SavedAudioValue = 1.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SavedFPSValue = 60.f;
+
 private:
 	int Score;
 	

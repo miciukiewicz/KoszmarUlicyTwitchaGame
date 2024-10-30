@@ -188,3 +188,14 @@ void UMyHUD::SetValueAudioSlider(float value)
 {
 	AudioSlider->SetValue(value);
 }
+
+void UMyHUD::SetValueFPSSlider(float value)
+{
+	FPSSlider->SetValue(value);
+}
+
+void UMyHUD::SetFPSCounterText(float value)
+{
+	FString floatStr = FString::SanitizeFloat(round(value));
+	FPSCounter->SetText(FText::FromString(floatStr));
+}
