@@ -34,7 +34,7 @@ void UMyHUD::SetScoreText()
 	}
 	else
 	{
-		FString str = FString::Printf(TEXT("Cuksy %d/9"), score);
+		FString str = FString::Printf(TEXT("cuksy %d/9"), score);
 		ScoreText->SetText(FText::FromString(str));
 	}
 }

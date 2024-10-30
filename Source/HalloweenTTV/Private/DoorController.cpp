@@ -27,9 +27,6 @@ ADoorController::ADoorController()
 
 void ADoorController::OnInteract()
 {
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Trying to open the door"));
-
 	if (DoorSound != nullptr)
 	{
 		DoorSound->Play();

@@ -61,6 +61,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputAction* SprintAction;
 
+	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+	class UInputAction* ResetPositionAction;
+
 	UPROPERTY(EditAnywhere)
 	class UAudioComponent* StepSoundCue;
 
@@ -82,6 +85,7 @@ protected:
 	void PauseMenuVis();
 	void SprintStart();
 	void SprintEnd();
+	void ResetPosition();
 	float WalkSpeed;
 	FTimerHandle FootstepTimerHandle;
 	FTimerHandle HUDTimer;

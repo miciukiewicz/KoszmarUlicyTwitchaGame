@@ -224,6 +224,11 @@ void APlayerCharacter::SprintEnd()
 		true); // looping?
 }
 
+void APlayerCharacter::ResetPosition()
+{
+	this->TeleportTo(FVector(1200, -280, 200), FRotator(0.f), false, false);
+}
+
 void APlayerCharacter::SetTimerOnHUD()
 {
 	minutes++;
@@ -319,5 +324,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(PauseMenuAction, ETriggerEvent::Triggered, this, &APlayerCharacter::PauseMenuVis);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &APlayerCharacter::SprintStart);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &APlayerCharacter::SprintEnd);
+		EnhancedInputComponent->BindAction(ResetPositionAction, ETriggerEvent::Triggered, this, &APlayerCharacter::ResetPosition);
+
 	}
 }
