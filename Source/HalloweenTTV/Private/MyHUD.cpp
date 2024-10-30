@@ -43,7 +43,10 @@ void UMyHUD::SetTimer(int hours, int minutes)
 {
 	if (hours == 0)
 	{
-		FString str = FString::Printf(TEXT("00:00"), hours, minutes);
+		if (GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("End sound cue"));
+
+		FString str = "00:00";
 		TimerText->SetText(FText::FromString(str));
 
 		GetWorld()->GetTimerManager().SetTimer(
@@ -52,6 +55,7 @@ void UMyHUD::SetTimer(int hours, int minutes)
 			&UMyHUD::SetTimerVis, // function to call on elapsed
 			0.5f, // float delay until elapsed
 			true); // looping?
+		return;
 	}
 
 	if (minutes < 10)

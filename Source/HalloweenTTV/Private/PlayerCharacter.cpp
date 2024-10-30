@@ -281,7 +281,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 	if (isRunning)
 	{
-		sprintEnergy -= 0.5f;
+		sprintEnergy -= (45.f * DeltaTime);
 		HUDWidget->SetStaminaProgressBarVisibility(true);
 		HUDWidget->SetStaminaProgressBar(sprintEnergy);
 		if (sprintEnergy <= 0.f)
@@ -296,7 +296,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 			HUDWidget->SetStaminaProgressBarVisibility(false);
 			return;
 		}
-		sprintEnergy += 0.3f;
+		sprintEnergy += (25.f * DeltaTime);
 		HUDWidget->SetStaminaProgressBarVisibility(true);
 		HUDWidget->SetStaminaProgressBar(sprintEnergy);
 	}
