@@ -7,7 +7,7 @@ AGhostActor::AGhostActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	GhostMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	GhostMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("GhostMesh"));
 	GhostMesh->SetupAttachment(RootComponent);
 
 	GhostSoundCue = CreateDefaultSubobject<UAudioComponent>(TEXT("GhostSound"));
@@ -18,13 +18,13 @@ void AGhostActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	StartLocation = GetActorLocation();
+	vStartLocation = GetActorLocation();
 
-	Direction = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - StartLocation;
+	vDirection = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation() - vStartLocation;
 
-	TotalDistance = Direction.Size();
+	fTotalDistance = vDirection.Size();
 
-	Direction = Direction.GetSafeNormal();
+	vDirection = vDirection.GetSafeNormal();
 }
 
 void AGhostActor::Tick(float DeltaTime)

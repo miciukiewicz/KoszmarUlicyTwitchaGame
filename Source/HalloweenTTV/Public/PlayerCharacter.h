@@ -18,27 +18,11 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void SetInteractVisibility(bool value);
-
-	bool PauseMenu = false;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float ValueFromOptions;
 
 protected:
 	virtual void BeginPlay() override;
-
-	UPROPERTY(EditAnywhere)
-	float InteractLineTraceLength = 350.f; 
-
-	UPROPERTY(EditAnywhere)
-	class UCameraComponent* Camera;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TSubclassOf<UMyHUD> HUDClass;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	UMyHUD* HUDWidget;
 
 	UPROPERTY(EditAnywhere, Category = "EnhancedInput")
 	class UInputMappingContext* InputMapping;
@@ -65,18 +49,29 @@ protected:
 	class UInputAction* ResetPositionAction;
 
 	UPROPERTY(EditAnywhere)
+	class UCameraComponent* Camera;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TSubclassOf<UMyHUD> HUDClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UMyHUD* HUDWidget;
+
+	UPROPERTY(EditAnywhere)
 	class UAudioComponent* StepSoundCue;
 
 	UPROPERTY(EditAnywhere)
-	class UAudioComponent* PickUpSound;
+	class UAudioComponent* PickUpSoundCue;
 
 	UPROPERTY(EditAnywhere)
-	class UAudioComponent* TimerSound;
+	class UAudioComponent* EndTimerSoundCue;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<AActor> ProjectileClass;
+	TSubclassOf<AActor> EndgameGhostActor;
 
-	void PlayFootstepSound();
+	UPROPERTY(EditAnywhere)
+	float fInteractLineTraceLength = 350.f;
+
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Interact();
@@ -86,14 +81,18 @@ protected:
 	void SprintStart();
 	void SprintEnd();
 	void ResetPosition();
-	float WalkSpeed;
-	FTimerHandle FootstepTimerHandle;
-	FTimerHandle HUDTimer;
-	FTimerHandle useSprintEnergy;
-	FTimerHandle regenSprintEnergy;
-	float sprintEnergy = 100.f;
+	FTimerHandle thFootsteps;
+	FTimerHandle thHUDTime;
+	FTimerHandle thUseSprintEnergy;
+	FTimerHandle thRegenSprintEnergy;
+
+private:
 	void SetTimerOnHUD();
-	int hours = 20;
-	int minutes = 0;
-	bool isRunning = false;
+	void PlayFootstepSound();
+	void SetInteractVisibility(bool value);
+	float fSprintEnergy = 100.f;
+	float fWalkSpeed;
+	int iHours = 20;
+	int iMinutes = 0;
+	bool bIsRunning = false;
 };

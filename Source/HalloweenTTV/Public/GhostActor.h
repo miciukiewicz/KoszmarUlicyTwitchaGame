@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -28,7 +26,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 	int GhostSpeed;
 
-	FVector Direction;
-	FVector StartLocation;
-	float TotalDistance;
+private:
+	FVector vDirection;
+	FVector vStartLocation;
+	float fTotalDistance;
 };

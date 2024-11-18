@@ -19,14 +19,12 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, Category = "Mesh")
+	UPROPERTY(EditAnywhere)
 	class USkeletalMeshComponent* CatMesh;
 
 	UPROPERTY(EditAnywhere)
-	class UAudioComponent* SoundCue;
+	class UAudioComponent* CatSoundCue;
 
 	UPROPERTY(EditAnywhere)
 	class UAudioComponent* InteractSound;
-
-
 };

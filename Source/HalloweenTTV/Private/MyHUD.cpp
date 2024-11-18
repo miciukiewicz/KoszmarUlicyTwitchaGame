@@ -2,6 +2,11 @@
 #include "MyGameInstance.h"
 #include "Kismet\GameplayStatics.h"
 #include "PlayerCharacter.h"
+#include "Components\TextBlock.h"
+#include "Components\CanvasPanel.h"
+#include "Components\ProgressBar.h"
+#include "Components\Button.h"
+#include "Components\Slider.h"
 
 void UMyHUD::NativeConstruct()
 {
@@ -85,13 +90,13 @@ void UMyHUD::SetPauseMenuVisibility(bool value)
 {
 	if (value)
 	{
-		PlayerHUD->SetVisibility(ESlateVisibility::Hidden);
-		PauseMenuHUD->SetVisibility(ESlateVisibility::Visible);
+		PlayerHUDCanvas->SetVisibility(ESlateVisibility::Hidden);
+		PauseMenuCanvas->SetVisibility(ESlateVisibility::Visible);
 	}
 	else
 	{
-		PlayerHUD->SetVisibility(ESlateVisibility::Visible);
-		PauseMenuHUD->SetVisibility(ESlateVisibility::Hidden);
+		PlayerHUDCanvas->SetVisibility(ESlateVisibility::Visible);
+		PauseMenuCanvas->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
@@ -149,7 +154,6 @@ void UMyHUD::SetEnding(int value)
 		TimeEndingCanvas->SetVisibility(ESlateVisibility::Visible);
 		break;
 	}
-
 }
 
 void UMyHUD::BackToMenu()
@@ -173,14 +177,14 @@ void UMyHUD::OpenSettings()
 		if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("START"));
 
-	PauseMenuHUD->SetVisibility(ESlateVisibility::Hidden);
+	PauseMenuCanvas->SetVisibility(ESlateVisibility::Hidden);
 	OptionCanvas->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UMyHUD::BackToPauseMenu()
 {
 	OptionCanvas->SetVisibility(ESlateVisibility::Hidden);
-	PauseMenuHUD->SetVisibility(ESlateVisibility::Visible);
+	PauseMenuCanvas->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UMyHUD::SetValueMouseSlider(float value)

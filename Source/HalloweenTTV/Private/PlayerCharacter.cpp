@@ -28,13 +28,13 @@ APlayerCharacter::APlayerCharacter()
 	StepSoundCue->SetRelativeLocation(FVector(0.f, 0.f, -44.f));
 	StepSoundCue->bAutoActivate = false;
 
-	PickUpSound = CreateDefaultSubobject<UAudioComponent>(TEXT("PickUpSoundCue"));
-	PickUpSound->SetupAttachment(Camera);
-	PickUpSound->bAutoActivate = false;
+	PickUpSoundCue = CreateDefaultSubobject<UAudioComponent>(TEXT("PickUpSoundCue"));
+	PickUpSoundCue->SetupAttachment(Camera);
+	PickUpSoundCue->bAutoActivate = false;
 
-	TimerSound = CreateDefaultSubobject<UAudioComponent>(TEXT("TimerSound"));
-	TimerSound->SetupAttachment(Camera);
-	TimerSound->bAutoActivate = false;
+	EndTimerSoundCue = CreateDefaultSubobject<UAudioComponent>(TEXT("TimerSound"));
+	EndTimerSoundCue->SetupAttachment(Camera);
+	EndTimerSoundCue->bAutoActivate = false;
 }
 
 void APlayerCharacter::BeginPlay()
@@ -42,17 +42,17 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	UCharacterMovementComponent* characterMovement = GetCharacterMovement();
-	WalkSpeed = characterMovement->MaxWalkSpeed;
+	fWalkSpeed = characterMovement->MaxWalkSpeed;
 
 	GetWorld()->GetTimerManager().SetTimer(
-		FootstepTimerHandle, // handle to cancel timer at a later time
-		this, // the owning object
-		&APlayerCharacter::PlayFootstepSound, // function to call on elapsed
-		0.5f, // float delay until elapsed
-		true); // looping?
+		thFootsteps,
+		this,
+		&APlayerCharacter::PlayFootstepSound,
+		0.5f,
+		true);
 
 	GetWorld()->GetTimerManager().SetTimer(
-		HUDTimer,
+		thHUDTime,
 		this,
 		&APlayerCharacter::SetTimerOnHUD,
 		5.f,
@@ -100,7 +100,6 @@ void APlayerCharacter::Move(const FInputActionValue& Value)
 void APlayerCharacter::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookAxisVector = Value.Get<FVector2D>();
-
 	AddControllerPitchInput(LookAxisVector.Y * ValueFromOptions);
 	AddControllerYawInput(LookAxisVector.X * ValueFromOptions);
 }
@@ -111,9 +110,11 @@ void APlayerCharacter::Interact()
 
 	FHitResult HitResult;
 	FVector Start = Camera->GetComponentLocation();
-	FVector End = Start + Camera->GetForwardVector() * InteractLineTraceLength;
+	FVector End = Start + Camera->GetForwardVector() * fInteractLineTraceLength;
 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
 
+
+	// TODO: this should be done by interface
 	ADoorController* door = Cast<ADoorController>(HitResult.GetActor());
 	ACandyActor* candy = Cast<ACandyActor>(HitResult.GetActor());
 	AEndgameDoorActor* endgameDoor = Cast<AEndgameDoorActor>(HitResult.GetActor());
@@ -127,7 +128,7 @@ void APlayerCharacter::Interact()
 	{
 		candy->OnInteract();
 		HUDWidget->SetScoreText();
-		PickUpSound->Play();
+		PickUpSoundCue->Play();
 	}
 	else if (endgameDoor)
 	{
@@ -173,7 +174,6 @@ void APlayerCharacter::ZoomIn()
 void APlayerCharacter::PauseMenuVis()
 {
 	HUDWidget->SetPauseMenuVisibility(true);
-	PauseMenu = true;
 	UGameplayStatics::SetGamePaused(GetWorld(), true);
 	APlayerController* playerCont = GetWorld()->GetFirstPlayerController();
 	if (playerCont)
@@ -194,34 +194,34 @@ void APlayerCharacter::SprintStart()
 	}
 
 	UCharacterMovementComponent* characterMovement = GetCharacterMovement();
-	characterMovement->MaxWalkSpeed = WalkSpeed * 2;
-	isRunning = true;
+	characterMovement->MaxWalkSpeed = fWalkSpeed * 2;
+	bIsRunning = true;
 
-	GetWorld()->GetTimerManager().ClearTimer(FootstepTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(thFootsteps);
 
 	GetWorld()->GetTimerManager().SetTimer(
-		FootstepTimerHandle, // handle to cancel timer at a later time
-		this, // the owning object
-		&APlayerCharacter::PlayFootstepSound, // function to call on elapsed
-		0.25f, // float delay until elapsed
-		true); // looping?
+		thFootsteps, 
+		this,
+		&APlayerCharacter::PlayFootstepSound, 
+		0.25f, 
+		true);
 
 }
 
 void APlayerCharacter::SprintEnd()
 {
-	isRunning = false;
+	bIsRunning = false;
 	UCharacterMovementComponent* characterMovement = GetCharacterMovement();
-	characterMovement->MaxWalkSpeed = WalkSpeed;
+	characterMovement->MaxWalkSpeed = fWalkSpeed;
 
-	GetWorld()->GetTimerManager().ClearTimer(FootstepTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(thFootsteps);
 
 	GetWorld()->GetTimerManager().SetTimer(
-		FootstepTimerHandle, // handle to cancel timer at a later time
-		this, // the owning object
-		&APlayerCharacter::PlayFootstepSound, // function to call on elapsed
-		0.5f, // float delay until elapsed
-		true); // looping?
+		thFootsteps, 
+		this, 
+		&APlayerCharacter::PlayFootstepSound, 
+		0.5f, 
+		true);
 }
 
 void APlayerCharacter::ResetPosition()
@@ -231,22 +231,22 @@ void APlayerCharacter::ResetPosition()
 
 void APlayerCharacter::SetTimerOnHUD()
 {
-	minutes++;
-	if (minutes == 60)
+	iMinutes++;
+	if (iMinutes == 60)
 	{
-		hours++;
-		minutes = 0;
+		iHours++;
+		iMinutes = 0;
 	}
 
-	if (hours == 24)
+	if (iHours == 24)
 	{
-		hours = 0;
-		GetWorldTimerManager().ClearTimer(HUDTimer);
-		TimerSound->Play();
-		GetWorld()->SpawnActor<AActor>(ProjectileClass, FVector(1500, -110, 190), GetActorRotation());
+		iHours = 0;
+		GetWorldTimerManager().ClearTimer(thHUDTime);
+		EndTimerSoundCue->Play();
+		GetWorld()->SpawnActor<AActor>(EndgameGhostActor, FVector(1500, -110, 190), GetActorRotation());
 	}
 
-	HUDWidget->SetTimer(hours, minutes);
+	HUDWidget->SetTimer(iHours, iMinutes);
 }
 
 void APlayerCharacter::SetInteractVisibility(bool value)
@@ -260,14 +260,14 @@ void APlayerCharacter::Tick(float DeltaTime)
 
 	FHitResult HitResult;
 	FVector Start = Camera->GetComponentLocation();
-	FVector End = Start + Camera->GetForwardVector() * InteractLineTraceLength;
+	FVector End = Start + Camera->GetForwardVector() * fInteractLineTraceLength;
 	GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
 
+	// TODO: this should be done by interface
 	ADoorController* door = Cast<ADoorController>(HitResult.GetActor());
 	ACandyActor* candy = Cast<ACandyActor>(HitResult.GetActor());
 	AEndgameDoorActor* endgameDoor = Cast<AEndgameDoorActor>(HitResult.GetActor());
 	ACatActor* cat = Cast<ACatActor>(HitResult.GetActor());
-
 
 	if (door || candy || endgameDoor || cat)
 	{
@@ -278,27 +278,26 @@ void APlayerCharacter::Tick(float DeltaTime)
 		SetInteractVisibility(false);
 	}
 
-
-	if (isRunning)
+	if (bIsRunning)
 	{
-		sprintEnergy -= (45.f * DeltaTime);
+		fSprintEnergy -= (45.f * DeltaTime);
 		HUDWidget->SetStaminaProgressBarVisibility(true);
-		HUDWidget->SetStaminaProgressBar(sprintEnergy);
-		if (sprintEnergy <= 0.f)
+		HUDWidget->SetStaminaProgressBar(fSprintEnergy);
+		if (fSprintEnergy <= 0.f)
 		{
 			SprintEnd();
 		}
 	}
 	else
 	{
-		if (sprintEnergy >= 100.f)
+		if (fSprintEnergy >= 100.f)
 		{
 			HUDWidget->SetStaminaProgressBarVisibility(false);
 			return;
 		}
-		sprintEnergy += (25.f * DeltaTime);
+		fSprintEnergy += (25.f * DeltaTime);
 		HUDWidget->SetStaminaProgressBarVisibility(true);
-		HUDWidget->SetStaminaProgressBar(sprintEnergy);
+		HUDWidget->SetStaminaProgressBar(fSprintEnergy);
 	}
 }
 
@@ -325,6 +324,5 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &APlayerCharacter::SprintStart);
 		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &APlayerCharacter::SprintEnd);
 		EnhancedInputComponent->BindAction(ResetPositionAction, ETriggerEvent::Triggered, this, &APlayerCharacter::ResetPosition);
-
 	}
 }

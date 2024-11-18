@@ -13,6 +13,7 @@ public:
 	void AddScore();
 	int GetScore();
 	void ResetScore();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SavedSensValue = 0.5f;
 
@@ -24,5 +25,4 @@ public:
 
 private:
 	int Score;
-	
 };

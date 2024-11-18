@@ -11,15 +11,15 @@ ADoorController::ADoorController()
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	DoorMesh->SetupAttachment(RootComponent);
 
-	SoundCue = CreateDefaultSubobject<UAudioComponent>(TEXT("BehindDoorSound"));
-	SoundCue->SetupAttachment(DoorMesh);
-	SoundCue->SetRelativeLocation(FVector(45.f, -250.f, 125.f));
-	SoundCue->bAutoActivate = false;
+	BehindDoorSoundCue = CreateDefaultSubobject<UAudioComponent>(TEXT("BehindDoorSound"));
+	BehindDoorSoundCue->SetupAttachment(DoorMesh);
+	BehindDoorSoundCue->SetRelativeLocation(FVector(45.f, -250.f, 125.f));
+	BehindDoorSoundCue->bAutoActivate = false;
 
-	DoorSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DoorSound"));
-	DoorSound->SetupAttachment(DoorMesh);
-	DoorSound->SetRelativeLocation(FVector(45.f, 0.f, 90.f));
-	DoorSound->bAutoActivate = false;
+	DoorSoundCue = CreateDefaultSubobject<UAudioComponent>(TEXT("DoorSound"));
+	DoorSoundCue->SetupAttachment(DoorMesh);
+	DoorSoundCue->SetRelativeLocation(FVector(45.f, 0.f, 90.f));
+	DoorSoundCue->bAutoActivate = false;
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	BoxComponent->SetupAttachment(DoorMesh);
@@ -27,39 +27,38 @@ ADoorController::ADoorController()
 
 void ADoorController::OnInteract()
 {
-	if (DoorSound != nullptr)
+	if (DoorSoundCue != nullptr)
 	{
-		DoorSound->Play();
+		DoorSoundCue->Play();
 	}
 
-	if (LockedDoor)
+	if (bLockedDoor)
 	{
-		if (SoundCue == nullptr) return;
+		if (BehindDoorSoundCue == nullptr) return;
 
 		if (bSoundPlayed == false)
 		{
 			bSoundPlayed = true;
 
 			GetWorld()->GetTimerManager().SetTimer(
-				DelayForSoundCue, // handle to cancel timer at a later time
-				this, // the owning object
-				&ADoorController::PlaySoundCue, // function to call on elapsed
-				1.25f, // float delay until elapsed
-				false); // looping?
+				DelayForSoundCue, 
+				this, 
+				&ADoorController::PlaySoundCue, 
+				1.25f, 
+				false);
 
 			return;
 		}
 		return;
 	}
-		
 
 	if (bIsDoorClosed)
 	{
-		Timeline.Play();
+		TimelineOpeningDoors.Play();
 	}
 	else
 	{
-		Timeline.Reverse();
+		TimelineOpeningDoors.Reverse();
 	}
 
 	bIsDoorClosed = !bIsDoorClosed;
@@ -75,48 +74,25 @@ void ADoorController::BeginPlay()
 	{
 		FOnTimelineFloat TimelineProgress;
 		TimelineProgress.BindDynamic(this, &ADoorController::OpenDoor);
-		Timeline.AddInterpFloat(CurveFloat, TimelineProgress);
+		TimelineOpeningDoors.AddInterpFloat(CurveFloat, TimelineProgress);
 	}
-
-	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &ADoorController::OnOverlapBegin);
-	BoxComponent->OnComponentEndOverlap.AddDynamic(this, &ADoorController::OnEndOverlap);
 }
 
 void ADoorController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	Timeline.TickTimeline(DeltaTime);
+	TimelineOpeningDoors.TickTimeline(DeltaTime);
 }
 
 void ADoorController::OpenDoor(float value)
 {
-	FRotator Rot = FRotator(0.f, fAtStartRotation + (DoorRotateAngle * value), 0.f);
+	FRotator Rot = FRotator(0.f, fAtStartRotation + (fDoorRotateAngle * value), 0.f);
 
 	DoorMesh->SetRelativeRotation(Rot);
 }
 
-void ADoorController::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{	
-	//APlayerCharacter* player = Cast<APlayerCharacter>(OtherActor);
-
-	//if (player)
-	//{
-	//	player->SetInteractVisibility(true);
-	//}
-}
-
-void ADoorController::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	//APlayerCharacter* player = Cast<APlayerCharacter>(OtherActor);
-
-	//if (player)
-	//{
-	//	player->SetInteractVisibility(false);
-	//}
-}
-
 void ADoorController::PlaySoundCue()
 {
-	SoundCue->Play();
+	BehindDoorSoundCue->Play();
 }

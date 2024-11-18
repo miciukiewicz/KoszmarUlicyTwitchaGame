@@ -2,11 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Components\TextBlock.h"
-#include <Components\CanvasPanel.h>
-#include "Components\ProgressBar.h"
-#include <Components\Button.h>
-#include "Components\Slider.h"
 #include "MyHUD.generated.h"
 
 UCLASS()
@@ -17,45 +12,81 @@ class HALLOWEENTTV_API UMyHUD : public UUserWidget
 	void NativeConstruct();
 
 public:
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UTextBlock* ScoreText;
 
+	//canvas
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UTextBlock* TimerText;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UTextBlock* InteractText;
+	class UCanvasPanel* PlayerHUDCanvas;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UCanvasPanel* PlayerHUD;
+	class UCanvasPanel* PauseMenuCanvas;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UCanvasPanel* PauseMenuHUD;
+	class UCanvasPanel* BaseEndingCanvas;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* ResumeButton;
+	class UCanvasPanel* GoodEndingCanvas;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* MenuButton;
+	class UCanvasPanel* OkEndingCanvas;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UProgressBar* StaminaProgressBar;
+	class UCanvasPanel* CarEndingCanvas;
 
-	void SetScoreText();
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UCanvasPanel* KacEndingCanvas;
 
-	void SetTimer(int hours, int minutes);
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UCanvasPanel* TimeEndingCanvas;
 
-	FTimerHandle HUDTimerVis;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UCanvasPanel* OptionCanvas;
 
-	void SetTimerVis();
+	//in-game HUD and logic
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UTextBlock* ScoreText;
 
-	void SetInteractVisibility(bool value);
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UTextBlock* TimerText;
 
-	void SetPauseMenuVisibility(bool value);
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UTextBlock* InteractText;
 
-	void SetStaminaProgressBar(float value);
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UProgressBar* StaminaProgressBar;
 
-	void SetStaminaProgressBarVisibility(bool value);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* BackTOMenuButton;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	class UButton* RetryButton;
+
+	UFUNCTION(BlueprintCallable)
+	void SetEnding(int value);
+
+	//options
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* ResumeButton;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* MenuButton;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* OptionsButton;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* BackToPauseButton;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class USlider* MouseSlider;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class USlider* AudioSlider;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class USlider* FPSSlider;
+
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UTextBlock* FPSCounter;
 
 	UFUNCTION()
 	void ResumeGame();
@@ -63,34 +94,17 @@ public:
 	UFUNCTION()
 	void MenuExit();
 
-	bool bHUDVis = true;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UCanvasPanel* BaseEndingCanvas;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UCanvasPanel* GoodEndingCanvas;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UCanvasPanel* OkEndingCanvas;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UCanvasPanel* CarEndingCanvas;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UCanvasPanel* KacEndingCanvas;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UCanvasPanel* TimeEndingCanvas;
+	UFUNCTION(BlueprintCallable)
+	void SetValueMouseSlider(float value);
 
 	UFUNCTION(BlueprintCallable)
-	void SetEnding(int value);
+	void SetValueAudioSlider(float value);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UButton* BackTOMenuButton;
+	UFUNCTION(BlueprintCallable)
+	void SetFPSCounterText(float value);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	UButton* RetryButton;
+	UFUNCTION(BlueprintCallable)
+	void SetValueFPSSlider(float value);
 
 	UFUNCTION(BlueprintCallable)
 	void BackToMenu();
@@ -98,42 +112,20 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Retry();
 
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UCanvasPanel* OptionCanvas;
-
 	UFUNCTION(BlueprintCallable)
 	void OpenSettings();
 
 	UFUNCTION(BlueprintCallable)
 	void BackToPauseMenu();
 
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* OptionsButton;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UButton* BackToPauseButton;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	USlider* MouseSlider;
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	USlider* AudioSlider;
-
-	UFUNCTION(BlueprintCallable)
-	void SetValueMouseSlider(float value);
-
-	UFUNCTION(BlueprintCallable)
-	void SetValueAudioSlider(float value);
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	USlider* FPSSlider;
-
-	UFUNCTION(BlueprintCallable)
-	void SetValueFPSSlider(float value);
-
-	UPROPERTY(EditAnywhere, meta = (BindWidget))
-	UTextBlock* FPSCounter;
-
-	UFUNCTION(BlueprintCallable)
-	void SetFPSCounterText(float value);
+	//getters and setters
+	void SetScoreText();
+	void SetTimer(int hours, int minutes);
+	void SetTimerVis();
+	void SetInteractVisibility(bool value);
+	void SetPauseMenuVisibility(bool value);
+	void SetStaminaProgressBar(float value);
+	void SetStaminaProgressBarVisibility(bool value);
+	FTimerHandle HUDTimerVis;
+	bool bHUDVis = true;
 };

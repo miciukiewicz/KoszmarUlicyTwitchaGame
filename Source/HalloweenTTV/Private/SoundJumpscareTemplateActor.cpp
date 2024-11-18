@@ -12,9 +12,9 @@ ASoundJumpscareTemplateActor::ASoundJumpscareTemplateActor()
 	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
 	BoxCollider->SetupAttachment(RootComponent);
 
-	SoundCue = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
-	SoundCue->SetupAttachment(BoxCollider);
-	SoundCue->bAutoActivate = false;
+	JumpscareSoundCue = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	JumpscareSoundCue->SetupAttachment(BoxCollider);
+	JumpscareSoundCue->bAutoActivate = false;
 }
 
 void ASoundJumpscareTemplateActor::BeginPlay()
@@ -24,7 +24,7 @@ void ASoundJumpscareTemplateActor::BeginPlay()
 	DrawDebugSphere(GetWorld(), GetActorLocation(), 25.f, 24, FColor::Red, false, 10.f);
 
 	BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &ASoundJumpscareTemplateActor::OnBoxBeginOverlap);
-	SoundCue->OnAudioFinished.AddDynamic(this, &ASoundJumpscareTemplateActor::OnFinishedSound);
+	JumpscareSoundCue->OnAudioFinished.AddDynamic(this, &ASoundJumpscareTemplateActor::OnFinishedSound);
 }
 
 void ASoundJumpscareTemplateActor::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -35,15 +35,12 @@ void ASoundJumpscareTemplateActor::OnBoxBeginOverlap(UPrimitiveComponent* Overla
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Actor overlapping -> %s"), *OtherActor->GetName()));
 
 		bSoundPlayed = true;
-		SoundCue->Play();
+		JumpscareSoundCue->Play();
 	}
 }
 
 void ASoundJumpscareTemplateActor::OnFinishedSound()
 {
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("End sound cue"));
-
 	Destroy();
 }
 
